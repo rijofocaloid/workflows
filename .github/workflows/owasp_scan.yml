@@ -11,9 +11,9 @@ jobs:
 
     steps:
       - name: Set up Node.js
-        uses: actions/setup-node@v2  # Use the latest version (v2) of setup-node
+        uses: actions/setup-node@v2
         with:
-          node-version: '16'  # Set the Node.js version to the latest supported version
+          node-version: '16'  # Set the Node.js version to the latest supported version (node16)
 
       - name: Checkout code
         uses: actions/checkout@v2
