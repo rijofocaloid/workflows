@@ -1,0 +1,41 @@
+name: OWASP Scan
+
+on:
+  push:
+    branches:
+      - main  # Set this to the branch you want to trigger the workflow on
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Java and OWASP ZAP
+        uses: actions/setup-java@v2
+        with:
+          java-version: '11'
+
+      - name: Install OWASP ZAP CLI
+        run: |
+          curl -s https://raw.githubusercontent.com/zaproxy/zap-admin/master/ZapVersions.xml | grep -oP '(?<=<url>)[^<]+' | grep -m 1 -ioP 'https://[^/]+/[^/]+/ZAP_[^/]+/ZAP_[^/]+_Linux.tar.gz' | wget -i - -O /tmp/zap.tar.gz
+          mkdir /tmp/zap
+          tar -zxf /tmp/zap.tar.gz -C /tmp/zap --strip-components 1
+          mv /tmp/zap /opt/zap
+
+      - name: Run OWASP ZAP Scan
+        run: |
+          /opt/zap/zap.sh -daemon -config api.key=yourapikey -port 8090 -host 0.0.0.0 -dir /zap/wrk/
+          /opt/zap/zap-cli.py --zap-url http://localhost:8090/ -p 8090 -f openapi --output /zap/wrk/scan-report.html https://dev-bo.nephroplus.com/
+
+      - name: Stop ZAP
+        run: |
+          /opt/zap/zap.sh -daemon -config api.key=yourapikey -port 8090 -host 0.0.0.0 -dir /zap/wrk/ -shutdown
+
+      - name: Upload Scan Report
+        uses: actions/upload-artifact@v2
+        with:
+          name: owasp-scan-report
+          path: /zap/wrk/scan-report.html
