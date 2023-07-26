@@ -13,3 +13,8 @@ jobs:
         run: zap-cli scan -f scan.yaml
       - name: Generate Report
         run: zap-cli report -o report.html
+      - name: Upload Report
+        uses: actions/upload-artifact@v2
+        with:
+          name: report
+          path: report.html
