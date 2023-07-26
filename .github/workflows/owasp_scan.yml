@@ -29,9 +29,9 @@ jobs:
         run: |
           chmod +x /path/to/owasp_scan.sh
           /path/to/owasp_scan.sh  # Replace with the actual path to your owasp_scan.sh script
-
+          
       - name: Upload Scan Report
         uses: actions/upload-artifact@v2
         with:
           name: owasp-scan-report
-          path: /tmp/scan-report.html  # Replace with the actual path where you saved the scan report in the owasp_scan.sh script
+          path: scan-report.html
