@@ -14,7 +14,7 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Set up Java and OWASP ZAP
-        uses: actions/setup-java@v2
+        uses: actions/setup-java@v4  # Use the latest version (v4) instead of v2
         with:
           java-version: '11'
 
