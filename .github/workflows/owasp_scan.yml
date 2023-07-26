@@ -10,13 +10,13 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Set up Node.js
+        uses: actions/setup-node@v2  # Use the latest version (v2) of setup-node
+        with:
+          node-version: '16'  # Set the Node.js version to the latest supported version
+
       - name: Checkout code
         uses: actions/checkout@v2
-
-      - name: Set up Java and OWASP ZAP
-        uses: actions/setup-java@v4  # Use the latest version (v4) instead of v2
-        with:
-          java-version: '11'
 
       - name: Install OWASP ZAP CLI
         run: |
