@@ -1,0 +1,4 @@
+scanner:
+  name: zap
+  options:
+    url: https://dev-bo.nephroplus.com/
