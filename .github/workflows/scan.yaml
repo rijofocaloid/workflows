@@ -1,4 +1,51 @@
-scanner:
-  name: zap
-  options:
-    url: https://dev-bo.nephroplus.com/
+env:
+  contexts:
+  - name: "Automation Context"
+    urls:
+    - "https://dev-bo.nephroplus.com/"
+    - "https://dev-bo.nephroplus.com/bo"
+    - "https://dev-bo.nephroplus.com/keycloak"
+    includePaths:
+    - "https://dev-bo.nephroplus.com/.*"
+    - "https://dev-bo.nephroplus.com/bo.*"
+    - "https://dev-bo.nephroplus.com/keycloak.*"
+    excludePaths: []
+    authentication:
+      method: "form"
+      parameters:
+        loginRequestBody: "username=dev@focaloid.com&password=test&credentialId="
+        loginPageUrl: ""
+        loginRequestUrl: "https://dev-bo.nephroplus.com/keycloak/realms/nephroplus/login-actions/authenticate.*"
+      verification:
+        method: "response"
+        pollFrequency: 60
+        pollUnits: "requests"
+        pollUrl: ""
+        pollPostData: ""
+    sessionManagement:
+      method: "cookie"
+      parameters: {}
+    technology:
+      exclude: []
+  parameters:
+    failOnError: true
+    failOnWarning: false
+    progressToStdout: true
+  vars: {}
+jobs:
+- parameters: {}
+  name: "alertFilter"
+  type: "alertFilter"
+- parameters:
+    scanOnlyInScope: true
+    enableTags: false
+  rules: []
+  name: "passiveScan-config"
+  type: "passiveScan-config"
+- parameters:
+    template: "risk-confidence-html"
+    reportDir: "/zap/wrk/"
+    reportTitle: "ZAP Scanning Report"
+    reportDescription: ""
+  name: "report"
+  type: "report"
