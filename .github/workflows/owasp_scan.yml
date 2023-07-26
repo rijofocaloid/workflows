@@ -27,15 +27,11 @@ jobs:
 
       - name: Run OWASP ZAP Scan
         run: |
-          /opt/zap/zap.sh -daemon -config api.key=yourapikey -port 8090 -host 0.0.0.0 -dir /zap/wrk/
-          /opt/zap/zap-cli.py --zap-url http://localhost:8090/ -p 8090 -f openapi --output /zap/wrk/scan-report.html https://dev-bo.nephroplus.com/
-
-      - name: Stop ZAP
-        run: |
-          /opt/zap/zap.sh -daemon -config api.key=yourapikey -port 8090 -host 0.0.0.0 -dir /zap/wrk/ -shutdown
+          chmod +x /path/to/owasp_scan.sh
+          /path/to/owasp_scan.sh  # Replace with the actual path to your owasp_scan.sh script
 
       - name: Upload Scan Report
         uses: actions/upload-artifact@v2
         with:
           name: owasp-scan-report
-          path: /zap/wrk/scan-report.html
+          path: /tmp/scan-report.html  # Replace with the actual path where you saved the scan report in the owasp_scan.sh script
