@@ -1,37 +1,15 @@
 name: OWASP Scan
-
 on:
   push:
     branches:
-      - main  # Set this to the branch you want to trigger the workflow on
-
+      - main
 jobs:
   scan:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Set up Node.js
-        uses: actions/setup-node@v2
-        with:
-          node-version: '16'  # Set the Node.js version to the latest supported version (node16)
-
-      - name: Checkout code
-        uses: actions/checkout@v2
-
-      - name: Install OWASP ZAP CLI
-        run: |
-          curl -s https://raw.githubusercontent.com/zaproxy/zap-admin/master/ZapVersions.xml | grep -oP '(?<=<url>)[^<]+' | grep -m 1 -ioP 'https://[^/]+/[^/]+/ZAP_[^/]+/ZAP_[^/]+_Linux.tar.gz' | wget -i - -O /tmp/zap.tar.gz
-          mkdir /tmp/zap
-          tar -zxf /tmp/zap.tar.gz -C /tmp/zap --strip-components 1
-          mv /tmp/zap /opt/zap
-
-      - name: Run OWASP ZAP Scan
-        run: |
-          chmod +x /path/to/owasp_scan.sh
-          /path/to/owasp_scan.sh  # Replace with the actual path to your owasp_scan.sh script
-          
-      - name: Upload Scan Report
-        uses: actions/upload-artifact@v2
-        with:
-          name: owasp-scan-report
-          path: scan-report.html
+      - name: Install OWASP ZAP
+        uses: owasp/zap-action@v1
+      - name: Scan Website
+        run: zap-cli scan -f scan.yaml
+      - name: Generate Report
+        run: zap-cli report -o report.html
