@@ -1,20 +1,51 @@
-name: OWASP Scan
-on:
-  push:
-    branches:
-      - main
+name: Share data between jobs
+
+on: [push]
+
 jobs:
-  scan:
+  job_1:
+    name: Add 3 and 7
     runs-on: ubuntu-latest
     steps:
-      - name: Install OWASP ZAP
-        uses: owasp/zap-action@v1
-      - name: Scan Website
-        run: zap-cli scan -f scan.yaml
-      - name: Generate Report
-        run: zap-cli report -o report.html
-      - name: Upload Report
-        uses: actions/upload-artifact@v2
+      - shell: bash
+        run: |
+          expr 3 + 7 > math-homework.txt
+      - name: Upload math result for job 1
+        uses: actions/upload-artifact@v3
         with:
-          name: report
-          path: report.html
+          name: homework
+          path: math-homework.txt
+
+  job_2:
+    name: Multiply by 9
+    needs: job_1
+    runs-on: windows-latest
+    steps:
+      - name: Download math result for job 1
+        uses: actions/download-artifact@v3
+        with:
+          name: homework
+      - shell: bash
+        run: |
+          value=`cat math-homework.txt`
+          expr $value \* 9 > math-homework.txt
+      - name: Upload math result for job 2
+        uses: actions/upload-artifact@v3
+        with:
+          name: homework
+          path: math-homework.txt
+
+  job_3:
+    name: Display results
+    needs: job_2
+    runs-on: macOS-latest
+    steps:
+      - name: Download math result for job 2
+        uses: actions/download-artifact@v3
+        with:
+          name: homework
+      - name: Print the final result
+        shell: bash
+        run: |
+          value=`cat math-homework.txt`
+          echo The result is $value
